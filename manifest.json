@@ -1,0 +1,16 @@
+{
+    "name": "Listen to Yourself",
+    "description": "A web extension that encourages you to think - or listen - before you post.",
+    "version": "1.0",
+    "manifest_version": 3,
+    "content_scripts": [
+        {
+            "matches": [
+                "*://*/*"
+            ],
+            "js": [
+                "content-script.js"
+            ]
+        }
+    ]
+}
