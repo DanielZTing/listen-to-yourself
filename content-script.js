@@ -1,3 +1,5 @@
+const HIGHLIGHTS = ['stupid', 'idiot', 'fuck', 'fucking', 'shit', 'retard', 'retarded', 'hate', 'crap', 'bullshit'];
+
 if (/reddit.com\/r\/.*\/comments/.test(window.location.href)) {
     for (let textbox of document.getElementsByClassName('usertext-edit')) {
         let read = document.createElement('button');
@@ -29,21 +31,40 @@ if (/reddit.com\/r\/.*\/comments/.test(window.location.href)) {
             text.style.margin = '3em auto';
             text.style.width = '90%';
             text.style.maxWidth = '50em';
-            text.style.fontFamily = 'SF Pro';
+            text.style.fontFamily = getComputedStyle(document.body).fontFamily;
             text.style.fontSize = 'large';
 
             let lastBoundary = 0;
             speech.onboundary = event => {
                 for (let i = lastBoundary; i < event.charIndex; i++) {
-                    document.getElementById('letter' + i).style.color = 'green';
+                    let span = document.getElementById('letter' + i);
+                    if (span.style.color !== 'red') {
+                        span.style.color = 'green';
+                    }
                 }
                 lastBoundary = event.charIndex;
+            }
+
+            function getWord(string, index) {
+                let word = '';
+                while (/\w/.test(string.charAt(index))) {
+                    index--;
+                }
+                index++;
+                while (/\w/.test(string.charAt(index))) {
+                    word += string.charAt(index);
+                    index++;
+                }
+                return word;
             }
 
             for (let i = 0; i < textarea.value.length; i++) {
                 let span = document.createElement('span');
                 span.id = 'letter' + i;
                 span.innerText = textarea.value.charAt(i);
+                if (HIGHLIGHTS.includes(getWord(textarea.value, i).toLowerCase())) {
+                    span.style.color = 'red';
+                }
                 text.append(span);
             }
 
