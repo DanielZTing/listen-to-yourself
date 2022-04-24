@@ -1,4 +1,4 @@
-const HIGHLIGHTS = ['stupid', 'idiot', 'fuck', 'fucking', 'shit', 'retard', 'retarded', 'hate', 'crap', 'bullshit'];
+const HIGHLIGHTS = ['stupid', 'idiot', 'fuck', 'fucking', 'shit', 'retard', 'retarded', 'hate', 'crap', 'bullshit', 'moron'];
 
 if (/reddit.com\/r\/.*\/comments/.test(window.location.href)) {
     for (let textbox of document.getElementsByClassName('usertext-edit')) {
@@ -13,11 +13,14 @@ if (/reddit.com\/r\/.*\/comments/.test(window.location.href)) {
             let comment = textarea.value;
             if (comment === '') return;
             let speech = new SpeechSynthesisUtterance(comment);
-            speech.onend = () => {
+            speech.onend = event => {
                 for (let i = lastBoundary; i < textarea.value.length; i++) {
                     let span = document.getElementById('letter' + i);
                     if (span.style.color !== 'red') {
                         span.style.color = 'green';
+                    }
+                    if (localStorage.getItem('ListenToYourself')) {
+                        navigator.clipboard.writeText(`Listen to Yourself: ${Math.round(event.elapsedTime / 1000)} seconds`);
                     }
                 }
                 setTimeout(() => {
@@ -30,7 +33,7 @@ if (/reddit.com\/r\/.*\/comments/.test(window.location.href)) {
                 }, 1000);
             };
             window.speechSynthesis.cancel();
-            setTimeout(() => window.speechSynthesis.speak(speech), 1000);
+            setTimeout(() => window.speechSynthesis.speak(speech), 500);
 
             let container = document.createElement('div');
             container.style.position = 'fixed';
@@ -109,6 +112,17 @@ if (/reddit.com\/r\/.*\/comments/.test(window.location.href)) {
 
             container.id = 'listen-to-yourself';
             container.append(text);
+
+            let share = document.createElement('button');
+            share.style.width = '100%';
+            share.style.backgroundColor = 'white';
+            share.style.fontFamily = getComputedStyle(document.body).fontFamily;
+            share.style.fontSize = 'large';
+            share.style.marginTop = '.5em';
+            localStorage.removeItem('ListenToYourself');
+            share.onclick = () => localStorage.setItem('ListenToYourself', true);
+            share.innerText = '📋 Share';
+            text.append(share);
 
             let shadow = document.createElement('div').attachShadow({ mode: 'closed' }).appendChild(container);
             document.body.append(shadow);
