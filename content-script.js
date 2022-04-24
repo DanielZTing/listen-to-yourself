@@ -1,4 +1,5 @@
-const HIGHLIGHTS = ['stupid', 'idiot', 'fuck', 'fucking', 'shit', 'retard', 'retarded', 'hate', 'crap', 'bullshit', 'moron'];
+const HIGHLIGHTS = ['stupid', 'idiot', 'fuck', 'fucking', 'shit', 'retard', 'retarded', 'hate', 'crap', 'bullshit',
+    'moron', 'bitch', 'fucker'];
 
 if (/reddit.com\/r\/.*\/comments/.test(window.location.href)) {
     for (let textbox of document.getElementsByClassName('usertext-edit')) {
