@@ -11,12 +11,24 @@ if (/reddit.com\/r\/.*\/comments/.test(window.location.href)) {
         textarea.oninput = () => save.disabled = true;
         read.onclick = () => {
             let comment = textarea.value;
+            if (comment === '') return;
             let speech = new SpeechSynthesisUtterance(comment);
             speech.onend = () => {
-                shadow.remove();
-                save.disabled = false;
+                for (let i = lastBoundary; i < textarea.value.length; i++) {
+                    let span = document.getElementById('letter' + i);
+                    if (span.style.color !== 'red') {
+                        span.style.color = 'green';
+                    }
+                }
+                setTimeout(() => {
+                    container.style.animationName = 'out';
+                    container.onanimationend = () => {
+                        shadow.remove();
+                        save.disabled = false;
+                    };
+                }, 1000);
             };
-            window.speechSynthesis.speak(speech);
+            setTimeout(() => window.speechSynthesis.speak(speech), 1000);
 
             let container = document.createElement('div');
             container.style.position = 'fixed';
@@ -68,7 +80,34 @@ if (/reddit.com\/r\/.*\/comments/.test(window.location.href)) {
                 text.append(span);
             }
 
+            let style = document.createElement('style');
+            style.innerHTML = `
+            @keyframes in {
+                from {
+                    top: 100%;
+                }
+
+                to {
+                    top: 0%;
+                }
+            }
+
+            @keyframes out {
+                from {
+                    top: 0%;
+                }
+
+                to {
+                    top: -100%;
+                }
+            }`;
+            container.append(style);
+            container.style.animationDuration = '1s';
+            container.style.animationName = 'in';
+
+            container.id = 'listen-to-yourself';
             container.append(text);
+
             let shadow = document.createElement('div').attachShadow({ mode: 'closed' }).appendChild(container);
             document.body.append(shadow);
         };
