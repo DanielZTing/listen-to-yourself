@@ -21,29 +21,31 @@ if (/reddit.com\/r\/.*\/comments/.test(window.location.href)) {
                     }
                 }
                 setTimeout(() => {
-                    container.style.animationName = 'out';
-                    container.onanimationend = () => {
+                    text.style.animationDuration = '.5s';
+                    text.style.animationName = 'out';
+                    text.onanimationend = () => {
                         shadow.remove();
                         save.disabled = false;
                     };
                 }, 1000);
             };
+            window.speechSynthesis.cancel();
             setTimeout(() => window.speechSynthesis.speak(speech), 1000);
 
             let container = document.createElement('div');
             container.style.position = 'fixed';
-            container.style.left = 0;
             container.style.top = 0;
             container.style.width = '100%';
             container.style.height = '100%';
+            container.style.backgroundColor = 'rgba(0, 0, 0, .5)';
             container.style.zIndex = '999999999';
             container.style.margin = '0 auto';
-            container.style.backgroundColor = getComputedStyle(document.body).backgroundColor;
             let text = document.createElement('div');
             text.style.margin = '3em auto';
-            text.style.width = '90%';
             text.style.maxWidth = '50em';
+            text.style.padding = '1em';
             text.style.fontFamily = getComputedStyle(document.body).fontFamily;
+            text.style.backgroundColor = getComputedStyle(document.body).backgroundColor;
             text.style.fontSize = 'large';
 
             let lastBoundary = 0;
@@ -84,26 +86,26 @@ if (/reddit.com\/r\/.*\/comments/.test(window.location.href)) {
             style.innerHTML = `
             @keyframes in {
                 from {
-                    top: 100%;
+                    transform: translateY(1000%);
                 }
 
                 to {
-                    top: 0%;
+                    transform: none;
                 }
             }
 
             @keyframes out {
                 from {
-                    top: 0%;
+                    transform: none;
                 }
 
                 to {
-                    top: -100%;
+                    transform: translateY(-1000%);
                 }
             }`;
             container.append(style);
-            container.style.animationDuration = '1s';
-            container.style.animationName = 'in';
+            text.style.animationDuration = '.375s';
+            text.style.animationName = 'in';
 
             container.id = 'listen-to-yourself';
             container.append(text);
